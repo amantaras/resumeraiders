@@ -29,7 +29,7 @@ namespace Company.Function
 
         [Function("GetApplications")]
         public async Task<HttpResponseData> GetApplications(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "applications")] HttpRequestData req)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "applications")] HttpRequestData req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request to get all applications.");
 
@@ -71,7 +71,7 @@ namespace Company.Function
 
         [Function("GetApplicationByUserIDandApplicationID")]
         public async Task<HttpResponseData> GetApplicationByUserIDandApplicationID(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "applications/{userId}/{applicationId}")] HttpRequestData req, int userId, int applicationId)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "applications/{userId}/{applicationId}")] HttpRequestData req, int userId, int applicationId)
         {
             _logger.LogInformation($"C# HTTP trigger function processed a request to get application with id {applicationId} for user with id {userId}.");
 
@@ -117,7 +117,7 @@ namespace Company.Function
 
         [Function("GetApplicationById")]
         public async Task<HttpResponseData> GetApplicationById(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "applications/{id}")] HttpRequestData req, int id)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "applications/{id}")] HttpRequestData req, int id)
         {
             _logger.LogInformation($"C# HTTP trigger function processed a request to get application with id {id}.");
 
@@ -162,7 +162,7 @@ namespace Company.Function
 
         [Function("CreateApplication")]
         public async Task<HttpResponseData> CreateApplication(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "applications")] HttpRequestData req)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "applications")] HttpRequestData req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request to create a new application.");
 
@@ -201,7 +201,7 @@ namespace Company.Function
 
         [Function("UpdateApplication")]
         public async Task<HttpResponseData> UpdateApplication(
-            [HttpTrigger(AuthorizationLevel.Function, "put", Route = "applications/{id}")] HttpRequestData req, int id)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "applications/{id}")] HttpRequestData req, int id)
         {
             _logger.LogInformation($"C# HTTP trigger function processed a request to update application with id {id}.");
 
@@ -241,7 +241,7 @@ namespace Company.Function
 
         [Function("DeleteApplication")]
         public async Task<HttpResponseData> DeleteApplication(
-            [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "applications/{id}")] HttpRequestData req, int id)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "applications/{id}")] HttpRequestData req, int id)
         {
             _logger.LogInformation($"C# HTTP trigger function processed a request to delete application with id {id}.");
 
