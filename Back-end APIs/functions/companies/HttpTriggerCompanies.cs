@@ -121,10 +121,10 @@ namespace Company.Function
             {
                 await connection.OpenAsync();
 
-                string query = "INSERT INTO Companies (CompanyID, CompanyName, Location) VALUES (@CompanyID, @CompanyName, @Location)";
+                string query = "INSERT INTO Companies (CompanyName, Location) VALUES (@CompanyName, @Location)";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@CompanyID", company.CompanyID);
+                    //command.Parameters.AddWithValue("@CompanyID", company.CompanyID);
                     command.Parameters.AddWithValue("@CompanyName", company.CompanyName);
                     command.Parameters.AddWithValue("@Location", company.Location);
 

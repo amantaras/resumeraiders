@@ -1,16 +1,16 @@
 CREATE TABLE Companies (
-    CompanyID INT PRIMARY KEY,
+    CompanyID INT IDENTITY(1,1) PRIMARY KEY,
     CompanyName VARCHAR(50) NOT NULL,
     Location VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Categories (
-    CategoryID INT PRIMARY KEY,
+    CategoryID INT IDENTITY(1,1) PRIMARY KEY,
     CategoryName VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Jobs (
-    JobID INT PRIMARY KEY,
+    JobID INT IDENTITY(1,1) PRIMARY KEY,
     JobTitle VARCHAR(50) NOT NULL,
     Description VARCHAR(MAX) NOT NULL,
     Location VARCHAR(50) NOT NULL,
@@ -22,14 +22,14 @@ CREATE TABLE Jobs (
 );
 
 CREATE TABLE Users (
-    UserID INT PRIMARY KEY,
+    UserID INT IDENTITY(1,1) PRIMARY KEY,
     FirstName VARCHAR(50) NOT NULL,
     LastName VARCHAR(50) NOT NULL,
     Email VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Applications (
-    ApplicationID INT PRIMARY KEY,
+    ApplicationID INT IDENTITY(1,1) PRIMARY KEY,
     UserID INT NOT NULL,
     JobID INT NOT NULL,
     ApplicationDate DATETIME NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE Applications (
 );
 
 CREATE TABLE Skills (
-    SkillID INT PRIMARY KEY,
+    SkillID INT IDENTITY(1,1) PRIMARY KEY,
     SkillName VARCHAR(50) NOT NULL,
     JobID INT NOT NULL,
     CONSTRAINT FK_Skills_Jobs FOREIGN KEY (JobID) REFERENCES Jobs(JobID)

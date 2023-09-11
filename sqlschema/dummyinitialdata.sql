@@ -1,72 +1,79 @@
+-- Delete sample data from Applications table
+DELETE FROM Applications;
 
--- Insert sample data into Companies tables
-MERGE INTO Companies AS target
-USING (VALUES 
-    (1, 'Acme Inc.', 'New York'),
-    (2, 'Globex Corporation', 'Springfield'),
-    (3, 'Initech', 'Austin')
-) AS source (CompanyID, CompanyName, Location)
-ON target.CompanyID = source.CompanyID
-WHEN NOT MATCHED THEN
-    INSERT (CompanyID, CompanyName, Location)
-    VALUES (source.CompanyID, source.CompanyName, source.Location);
+-- Delete sample data from Skills table
+DELETE FROM Skills;
+
+-- Delete sample data from Users table
+DELETE FROM Users;
+
+-- Delete sample data from Jobs table
+DELETE FROM Jobs;
+
+-- Delete sample data from Categories table
+DELETE FROM Categories;
+
+-- Delete sample data from Companies table
+DELETE FROM Companies;
+
+--- Insert sample data into Companies table
+INSERT INTO Companies (CompanyName, Location)
+VALUES ('Acme Inc.', 'New York'),
+       ('Globex Corporation', 'Springfield'),
+       ('Initech', 'Austin');
 
 -- Insert sample data into Categories table
-MERGE INTO Categories AS target
-USING (VALUES
-    (1, 'Software Development'),
-    (2, 'Marketing'),
-    (3, 'Sales')
-) AS source (CategoryID, CategoryName)
-ON target.CategoryID = source.CategoryID
-WHEN NOT MATCHED THEN
-    INSERT (CategoryID, CategoryName)
-    VALUES (source.CategoryID, source.CategoryName);
+INSERT INTO Categories (CategoryName)
+VALUES ('Software Development'),
+       ('Marketing'),
+       ('Sales');
 
 -- Insert sample data into Jobs table
-MERGE INTO Jobs AS target
-USING (VALUES
-    (1, 'Software Engineer', 'Develop software applications', 'New York', 100000, 1, 1),
-    (2, 'Marketing Manager', 'Manage marketing campaigns', 'Springfield', 80000, 2, 2),
-    (3, 'Sales Representative', 'Sell products to customers', 'Austin', 60000, 3, 3)
-) AS source (JobID, JobTitle, Description, Location, Salary, CompanyID, CategoryID)
-ON target.JobID = source.JobID
-WHEN NOT MATCHED THEN
-    INSERT (JobID, JobTitle, Description, Location, Salary, CompanyID, CategoryID)
-    VALUES (source.JobID, source.JobTitle, source.Description, source.Location, source.Salary, source.CompanyID, source.CategoryID);
+INSERT INTO Jobs (JobTitle, Description, Location, Salary, CompanyID, CategoryID)
+SELECT 'Software Engineer', 'Develop software applications', 'New York', 100000, CompanyID, CategoryID
+FROM Companies, Categories
+WHERE Companies.CompanyName = 'Acme Inc.' AND Categories.CategoryName = 'Software Development'
+UNION ALL
+SELECT 'Marketing Manager', 'Develop marketing strategies', 'Springfield', 80000, CompanyID, CategoryID
+FROM Companies, Categories
+WHERE Companies.CompanyName = 'Globex Corporation' AND Categories.CategoryName = 'Marketing'
+UNION ALL
+SELECT 'Sales Representative', 'Sell products to customers', 'Austin', 60000, CompanyID, CategoryID
+FROM Companies, Categories
+WHERE Companies.CompanyName = 'Initech' AND Categories.CategoryName = 'Sales';
 
 -- Insert sample data into Users table
-MERGE INTO Users AS target
-USING (VALUES
-    (1, 'John', 'Doe', 'johndoe@example.com'),
-    (2, 'Jane', 'Doe', 'janedoe@example.com'),
-    (3, 'Bob', 'Smith', 'bobsmith@example.com')
-) AS source (UserID, FirstName, LastName, Email)
-ON target.UserID = source.UserID
-WHEN NOT MATCHED THEN
-    INSERT (UserID, FirstName, LastName, Email)
-    VALUES (source.UserID, source.FirstName, source.LastName, source.Email);
+INSERT INTO Users (FirstName, LastName, Email)
+VALUES ('John', 'Doe', 'johndoe@example.com'),
+       ('Jane', 'Doe', 'janedoe@example.com'),
+       ('Bob', 'Smith', 'bobsmith@example.com');
 
 -- Insert sample data into Applications table
-MERGE INTO Applications AS target
-USING (VALUES
-    (1, 1, 1, '2022-01-01'),
-    (2, 2, 1, '2022-01-02'),
-    (3, 3, 2, '2022-01-03')
-) AS source (ApplicationID, UserID, JobID, ApplicationDate)
-ON target.ApplicationID = source.ApplicationID
-WHEN NOT MATCHED THEN
-    INSERT (ApplicationID, UserID, JobID, ApplicationDate)
-    VALUES (source.ApplicationID, source.UserID, source.JobID, source.ApplicationDate);
+INSERT INTO Applications (UserID, JobID, ApplicationDate)
+SELECT UserID, JobID, '2021-01-01'
+FROM Users, Jobs
+WHERE Users.FirstName = 'John' AND Jobs.JobTitle = 'Software Engineer'
+UNION ALL
+SELECT UserID, JobID, '2021-02-01'
+FROM Users, Jobs
+WHERE Users.FirstName = 'Jane' AND Jobs.JobTitle = 'Marketing Manager'
+UNION ALL
+SELECT UserID, JobID, '2021-03-01'
+FROM Users, Jobs
+WHERE Users.FirstName = 'Bob' AND Jobs.JobTitle = 'Sales Representative';
 
 -- Insert sample data into Skills table
-MERGE INTO Skills AS target
-USING (VALUES
-    (1, 'C#', 1),
-    (2, 'Java', 1),
-    (3, 'Marketing Strategy', 2)
-) AS source (SkillID, SkillName, JobID)
-ON target.SkillID = source.SkillID
-WHEN NOT MATCHED THEN
-    INSERT (SkillID, SkillName, JobID)
-    VALUES (source.SkillID, source.SkillName, source.JobID);
+INSERT INTO Skills (SkillName, JobID)
+SELECT 'C#', JobID
+FROM Jobs
+WHERE JobTitle = 'Software Engineer';
+
+INSERT INTO Skills (SkillName, JobID)
+SELECT 'Marketing Strategy', JobID
+FROM Jobs
+WHERE JobTitle = 'Marketing Manager';
+
+INSERT INTO Skills (SkillName, JobID)
+SELECT 'Sales', JobID
+FROM Jobs
+WHERE JobTitle = 'Sales Representative';
