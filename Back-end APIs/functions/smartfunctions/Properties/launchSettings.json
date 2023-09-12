@@ -1,8 +1,8 @@
 {
   "profiles": {
-    "Jobs": {
+    "smartfunctions": {
       "commandName": "Project",
-      "commandLineArgs": "--port 7076",
+      "commandLineArgs": "--port 7075",
       "launchBrowser": false
     }
   }
