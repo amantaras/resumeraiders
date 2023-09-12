@@ -19,12 +19,12 @@ hostBuilder.ConfigureServices(services =>
     services.AddSingleton<IKernel>(sp =>
     {
         IConfiguration configuration = sp.GetRequiredService<IConfiguration>();
-        string openAiApiKey = configuration["OPENAI_APIKEY"];
-
+        //string openAiApiKey = configuration["OPENAI_APIKEY"];
+        string openAiApiKey = "8317bab4fadd43049b15f39f5a61a0ec";
         IKernel kernel = new KernelBuilder()
             .WithLogger(sp.GetRequiredService<ILogger<IKernel>>())
             .Configure(config => config.AddOpenAIChatCompletionService(
-                modelId: "gpt-3.5-turbo",
+                modelId: "gpt-35-turbo-16k",
                 apiKey: openAiApiKey))
             .Build();
 
