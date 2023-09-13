@@ -8,9 +8,22 @@ using Microsoft.SemanticKernel.AI.ChatCompletion;
 using Microsoft.SemanticKernel.Memory;
 using Azure;
 using Azure.AI.OpenAI;
+using System.Text.Json;
 
 namespace SmartRaiders.smartFunctions
 {
+    public class JobsInformation
+    {
+        public string  JobTitle { get; set; }
+        public string  ContractType { get; set; }
+        public string  ApplicationProcess { get; set; }
+        public string  ReportsTo { get; set; }
+        public string  Location { get; set; }
+        public string  Benefits { get; set; }
+        public string  CompanyAbout { get; set; }   
+
+
+    }
     public class SmartFunctions
     {
         private readonly ILogger _logger;
@@ -112,103 +125,57 @@ namespace SmartRaiders.smartFunctions
         public async Task<HttpResponseData> GenerateJobDescription(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "GenerateJobDescription")] HttpRequestData req)
         {
-             OpenAIClient client = new OpenAIClient(
+            
+            string requestBody = await req.ReadAsStringAsync();
+            JobsInformation jobsInformation = JsonSerializer.Deserialize<JobsInformation>(requestBody);
+            OpenAIClient client = new OpenAIClient(
             new Uri("https://oai-uksouth-rr.openai.azure.com/"),
             new AzureKeyCredential(Environment.GetEnvironmentVariable("AZURE_OPENAI_API_KEY")));
             string user_message = await req.ReadAsStringAsync() ?? string.Empty;
-            string propmttemplate = @"
+           
+            var propmtTemplate = $@"
+please fulfil the below job description template. Pay special attention to the INSTRUCTION keyword because this is where I 
+need you to add the relevant information consiering the job position.
 
----
+Position: 
+{jobsInformation.JobTitle}
 
-## Position: 
-**{Job Title}**
+Location: 
+{jobsInformation.Location}
 
-## Department: 
-**{Department/Team}**
+Reports To: 
+{jobsInformation.ReportsTo}
 
-## Location: 
-**{Office Location/Remote}**
+Type: 
+{jobsInformation.ContractType}
 
-## Reports To: 
-**{Supervising Position}**
+Objective:
+INSTRUCTION: PLease, Provide a concise summary of the primary purpose of the  role {jobsInformation.JobTitle} within the organization. This should give a clear picture of why the role exists and its impact.
 
-## Type: 
-**{Full-Time/Part-Time/Contract}**
+Key Responsibilities:
+1. INSTRUCTION: Please, add here the top 3 key responsabilities for the job.
 
----
+Qualifications:
+- Education: INSTRUCTION: PleasE provide a typical DegreeLevel required in the typical Field Of Study
+- Experience: INSTRUCTION:provide an average years of experience
+- Skills: 
+   - INSTRUCTION: dd here the top 3 skills required for the job.
 
-### Objective:
+Key Competencies: INSTRUCTION: Add here the most imortant competencies for the job.
+- Ability to   INSTRUCTION: add relevant topic here
+- Demonstrated INSTRUCTION: add relevant topic herecontinue
 
-Provide a concise summary of the primary purpose of this role within the organization. This should give a clear picture of why the role exists and its impact.
+Benefits & Perks:
+- {jobsInformation.Benefits}
 
-`{Brief overview of the role's main objective and its contribution to the company's goals.}`
+About the compay
+{jobsInformation.CompanyAbout}
 
----
+Application Process:
+{jobsInformation.ApplicationProcess}
+";
 
-### Key Responsibilities:
-
-1. **{Primary Responsibility}**: 
-   - `{Specific task or duty related to the primary responsibility}`
-   - `{Another task or duty}`
-
-2. **{Secondary Responsibility}**: 
-   - `{Specific task or duty related to the secondary responsibility}`
-   - `{Another task or duty}`
-
-(Continue listing responsibilities as necessary.)
-
----
-
-### Qualifications:
-
-- **Education:** `{Degree Level (e.g., Bachelor's, Master's)} in {Field of Study}`
-- **Experience:** `{Number of years} years of experience in {specific field or role}`
-- **Skills:** 
-   - `{Specific skill or competency}`
-   - `{Another skill or competency}`
-   
-(Continue listing qualifications as necessary.)
-
----
-
-### Key Competencies:
-
-- **{Competency 1}**: Ability to `{specific behavior or trait related to competency}`
-- **{Competency 2}**: Demonstrated `{specific behavior or trait}`
-   
-(Continue listing competencies as necessary.)
-
----
-
-### Benefits & Perks:
-
-- `{Benefit such as health insurance, dental coverage, etc.}`
-- `{Perk such as flexible working hours, remote work options, etc.}`
-
-(Continue listing benefits and perks as necessary.)
-
----
-
-### About {Company Name}:
-
-Provide a brief description of the company, its mission, and its culture. This helps potential candidates understand the company's values and what it stands for.
-
-`{Brief overview of the company, its history, mission, vision, and values.}`
-
----
-
-### Equal Opportunity Statement:
-
-`{Company Name}` is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees.
-
----
-
-### Application Process:
-
-Interested candidates are invited to submit their `{resume/CV, cover letter, portfolio, etc.}` to `{HR email or application portal link}`. Only those selected for an interview will be contacted.
-" + user_message;
-
-       
+      
             // ### If streaming is not selected
             Response<ChatCompletions> responseWithoutStream = await client.GetChatCompletionsAsync(
                 "gpt-35-turbo-16k",
@@ -218,7 +185,7 @@ Interested candidates are invited to submit their `{resume/CV, cover letter, por
                     Messages =
                     {
                         new ChatMessage(ChatRole.System, @"You are an HR assistant that helps HR recruiters and talent finders to find the right information relevant to their business"),
-                        new ChatMessage(ChatRole.User, propmttemplate)
+                        new ChatMessage(ChatRole.User, propmtTemplate)
                         //new ChatMessage(ChatRole.Assistant, @"Hello! How can I assist you today?"),
                     },
                     Temperature = (float)1.7,

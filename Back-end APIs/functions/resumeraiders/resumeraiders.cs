@@ -35,10 +35,11 @@ namespace Company.Function
         public decimal Salary { get; set; }
         public int CompanyID { get; set; }
         public int CategoryID { get; set; }
-        public int ContractType { get; set; }
-        public int Benefits { get; set; }
-        public int ApplicationProcess { get; set; }
-        public int ReportsTo { get; set; }
+        public string  ContractType { get; set; }
+        public string  Benefits { get; set; }
+        public string  ApplicationProcess { get; set; }
+        public string ReportsTo { get; set; }
+        public string Tags { get; set; }
 
     }
 
@@ -533,7 +534,8 @@ namespace Company.Function
                                 ContractType = reader.GetInt32(7),
                                 Benefits = reader.GetInt32(8),
                                 ApplicationProcess = reader.GetInt32(9),
-                                ReportsTo = reader.GetInt32(10)
+                                ReportsTo = reader.GetInt32(10),
+                                Tags = reader.GetString(11)
                             };
                             jobs.Add(job);
                         }
@@ -578,10 +580,11 @@ namespace Company.Function
                                 Salary = reader.GetDecimal(4),
                                 CompanyID = reader.GetInt32(5),
                                 CategoryID = reader.GetInt32(6),
-                                ContractType = reader.GetInt32(7),
-                                Benefits = reader.GetInt32(8),
-                                ApplicationProcess = reader.GetInt32(9),
-                                ReportsTo = reader.GetInt32(10)
+                                ContractType = reader.GetString(7),
+                                Benefits = reader.GetString(8),
+                                ApplicationProcess = reader.GetString(9),
+                                ReportsTo = reader.GetString(10),
+                                Tags = reader.GetString(11)
                             };
 
                             var response = req.CreateResponse(HttpStatusCode.OK);
@@ -630,6 +633,7 @@ namespace Company.Function
                     command.Parameters.AddWithValue("@Benefits", job.Benefits);
                     command.Parameters.AddWithValue("@ApplicationProcess", job.ApplicationProcess);
                     command.Parameters.AddWithValue("@ReportsTo", job.ReportsTo);
+                    command.Parameters.AddWithValue("@Tags", job.Tags);
 
 
                     int rowsAffected = await command.ExecuteNonQueryAsync();
@@ -680,6 +684,7 @@ namespace Company.Function
                     command.Parameters.AddWithValue("@Benefits", job.Benefits);
                     command.Parameters.AddWithValue("@ApplicationProcess", job.ApplicationProcess);
                     command.Parameters.AddWithValue("@ReportsTo", job.ReportsTo);
+                    command.Parameters.AddWithValue("@Tags", job.Tags);
 
 
                     int rowsAffected = await command.ExecuteNonQueryAsync();
