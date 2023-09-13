@@ -30,16 +30,16 @@ namespace Company.Function
     {
         public int JobID { get; set; }
         public string JobTitle { get; set; }
-        public string Description { get; set; }
-        public string Location { get; set; }
-        public decimal Salary { get; set; }
-        public int CompanyID { get; set; }
-        public int CategoryID { get; set; }
-        public string  ContractType { get; set; }
-        public string  Benefits { get; set; }
-        public string  ApplicationProcess { get; set; }
-        public string ReportsTo { get; set; }
-        public string Tags { get; set; }
+        public string? Description { get; set; }
+        public string? Location { get; set; }
+        public decimal? Salary { get; set; }
+        public int? CompanyID { get; set; }
+        public int? CategoryID { get; set; }
+        public string? ContractType { get; set; }
+        public string?  Benefits { get; set; }
+        public string?  ApplicationProcess { get; set; }
+        public string? ReportsTo { get; set; }
+        public string? Tags { get; set; }
 
     }
 
@@ -527,15 +527,15 @@ namespace Company.Function
                                 JobID = reader.GetInt32(0),
                                 JobTitle = reader.GetString(1),
                                 Description = reader.GetString(2),
-                                Location = reader.GetString(3),
+                                Location = reader.IsDBNull(3) ? null : reader.GetString(3),
                                 Salary = reader.GetDecimal(4),
                                 CompanyID = reader.GetInt32(5),
                                 CategoryID = reader.GetInt32(6),
-                                ContractType = reader.GetInt32(7),
-                                Benefits = reader.GetInt32(8),
-                                ApplicationProcess = reader.GetInt32(9),
-                                ReportsTo = reader.GetInt32(10),
-                                Tags = reader.GetString(11)
+                                ContractType = reader.GetString(7),
+                                Benefits = reader.IsDBNull(8) ? null : reader.GetString(8),
+                                ApplicationProcess = reader.IsDBNull(9) ? null : reader.GetString(9),
+                                ReportsTo = reader.IsDBNull(10) ? null : reader.GetString(10),
+                                Tags = reader.IsDBNull(11) ? null : reader.GetString(11)
                             };
                             jobs.Add(job);
                         }
@@ -576,15 +576,15 @@ namespace Company.Function
                                 JobID = reader.GetInt32(0),
                                 JobTitle = reader.GetString(1),
                                 Description = reader.GetString(2),
-                                Location = reader.GetString(3),
+                                Location = reader.IsDBNull(3) ? null : reader.GetString(3),
                                 Salary = reader.GetDecimal(4),
                                 CompanyID = reader.GetInt32(5),
                                 CategoryID = reader.GetInt32(6),
                                 ContractType = reader.GetString(7),
-                                Benefits = reader.GetString(8),
-                                ApplicationProcess = reader.GetString(9),
-                                ReportsTo = reader.GetString(10),
-                                Tags = reader.GetString(11)
+                                Benefits = reader.IsDBNull(8) ? null : reader.GetString(8),
+                                ApplicationProcess = reader.IsDBNull(9) ? null : reader.GetString(9),
+                                ReportsTo = reader.IsDBNull(10) ? null : reader.GetString(10),
+                                Tags = reader.IsDBNull(11) ? null : reader.GetString(11)
                             };
 
                             var response = req.CreateResponse(HttpStatusCode.OK);
@@ -619,7 +619,7 @@ namespace Company.Function
             {
                 await connection.OpenAsync();
 
-                string query = "INSERT INTO Jobs (JobTitle, Description, Location, Salary, CompanyID, CategoryID) VALUES (@JobTitle, @Description, @Location, @Salary, @CompanyID, @CategoryID)";
+                string query = "INSERT INTO Jobs (JobTitle, Description, Location, Salary, CompanyID, CategoryID,ContractType,Benefits,ApplicationProcess,ReportsTo,Tags) VALUES (@JobTitle, @Description, @Location, @Salary, @CompanyID, @CategoryID,@ContractType,@Benefits,@ApplicationProcess,@ReportsTo,@Tags)";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@JobTitle", job.JobTitle);
@@ -670,7 +670,7 @@ namespace Company.Function
             {
                 await connection.OpenAsync();
 
-                string query = "UPDATE Jobs SET JobTitle = @JobTitle, Description = @Description, Location = @Location, Salary = @Salary, CompanyID = @CompanyID, CategoryID = @CategoryID WHERE JobID = @JobID";
+                string query = "UPDATE Jobs SET JobTitle = @JobTitle, Tags=@Tags, ReportsTo=@ReportsTo,ApplicationProcess=@ApplicationProcess , Benefits=@Benefits,ContractType=@ContractType, Description = @Description, Location = @Location, Salary = @Salary, CompanyID = @CompanyID, CategoryID = @CategoryID WHERE JobID = @JobID";
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@JobID", id);

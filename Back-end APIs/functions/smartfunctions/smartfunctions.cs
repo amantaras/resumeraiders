@@ -9,6 +9,14 @@ using Microsoft.SemanticKernel.Memory;
 using Azure;
 using Azure.AI.OpenAI;
 using System.Text.Json;
+using Microsoft.Azure.CognitiveServices.ContentModerator;
+using Microsoft.Azure.CognitiveServices.ContentModerator.Models;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace SmartRaiders.smartFunctions
 {
@@ -21,11 +29,59 @@ namespace SmartRaiders.smartFunctions
         public string  Location { get; set; }
         public string  Benefits { get; set; }
         public string  CompanyAbout { get; set; }   
+        public string Tags { get; set; }
 
 
     }
     public class SmartFunctions
     {
+        
+        
+        /*
+ * TEXT MODERATION
+ * This example moderates text from file.
+ */
+        public static string ModerateText(string inputText)
+        {
+            string SubscriptionKey="b068ab9aeafb48f3bcd97b20259d7d0f";
+            string Endpoint = "https://resumeraiderscontentmoderator.cognitiveservices.azure.com/";
+
+            ContentModeratorClient clientText = Authenticate(SubscriptionKey, Endpoint);
+            // Load the input text.
+            
+            string text = inputText;
+
+            // Remove carriage returns
+            text = text.Replace(Environment.NewLine, " ");
+            // Convert string to a byte[], then into a stream (for parameter in ScreenText()).
+            byte[] textBytes = Encoding.UTF8.GetBytes(text);
+            MemoryStream stream = new MemoryStream(textBytes);
+
+            //Console.WriteLine("Screening {0}...", inputFile);
+            // Format text
+
+            // Save the moderation results to a file.
+            string scanResult = string.Empty;
+           
+            // Screen the input text: check for profanity, classify the text into three categories,
+            // do autocorrect text, and check for personally identifying information (PII)
+            //outputWriter.WriteLine("Autocorrect typos, check for matching terms, PII, and classify.");
+
+            // Moderate the text
+            var vcreenResult = clientText.TextModeration.ScreenText("text/plain", stream, "eng", true, true, null, true);
+            scanResult = JsonConvert.SerializeObject(vcreenResult, Formatting.Indented);
+
+            return scanResult;
+        }
+        
+        public static ContentModeratorClient Authenticate(string key, string endpoint)
+        {
+            ContentModeratorClient client = new ContentModeratorClient(new ApiKeyServiceClientCredentials(key));
+            client.Endpoint = endpoint;
+
+            return client;
+        } 
+
         private readonly ILogger _logger;
         private readonly IKernel _kernel;
         private readonly IChatCompletion _chat;
@@ -37,6 +93,29 @@ namespace SmartRaiders.smartFunctions
             _kernel = kernel;
             _chat = chat;
             _chatHistory = chatHistory;
+        }
+
+        [Function("ModerateContent")]
+        public async Task<HttpResponseData> ModerateContent(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "ModerateContent")] HttpRequestData req)
+        {
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            //returns false if moderation is not required
+
+            // TODO: Implement content moderation logic here
+            // For example, you can use Azure Content Moderator API to moderate the content
+
+            // Simulate content moderation by delaying for 1 second
+            string textToEvaluate = await req.ReadAsStringAsync() ?? string.Empty;
+            
+            string Result = ModerateText(textToEvaluate);
+            JObject moderateResult = JObject.Parse(Result);
+            bool isReviewRecommended = (bool)moderateResult["Classification"]["ReviewRecommended"];
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+            await response.WriteStringAsync(isReviewRecommended.ToString());
+
+            return response;
         }
 
         [Function("GenerateTags")]
@@ -60,36 +139,12 @@ namespace SmartRaiders.smartFunctions
             string propmttemplate = @"Can you please give me 20 tags based on the follow job position? 
             5 of these tags should mention popular tools used to excel in that position
             I want you to categorize the tags based on classification. For example this is a very good response: 
-            Soft Skills:
-            1. Creativity
-            2. Attention to detail
-            3. Problem-solving
-            4. Time management
-            5. Communication skills
-
-            Technical Skills:
-            6. Digital drawing
-            7. Illustration
-            8. Color theory
-            9. Typography
-            10. Digital painting
-
-            Tools:
-            11. Adobe Illustrator
-            12. Photoshop
-            13. Procreate
-            14. Sketchbook Pro
-            15. Corel Painter
-
-            Knowledge:
-            16. Composition
-            17. Perspective drawing
-            18. Anatomy
-            19. Storytelling
-            20. Digital art trends 
+            Soft Skills: Creativity Attention to detail Problem-solving Time management  Communication skills Technical Skills: Digital drawingIllustration Color theory Typography Digital painting Tools: Adobe Illustrator Photoshop Procreate Sketchbook ProCorel Painter Knowledge: Composition Perspective drawing
+           
             Ignore any previous conversation we had.
             You do not need to come up with 20 tags mandatory. YOu can return less if you find the profession difficult to draft tags for.
             If you have trouble suggesting less than 3 tags for a specific profession, just return the text: I could not draft tags for this profession. Are you sure that the profession exists? 
+            The output should not include any special characters, numbers, carriage returns , the tags should be one after another one separating them only by one space.
             This is the profession" + user_message;
        
             // ### If streaming is not selected
@@ -115,19 +170,20 @@ namespace SmartRaiders.smartFunctions
             ChatCompletions completions = responseWithoutStream.Value;
 
             HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
-           
-            response.WriteString(completions.Choices[0].Message.Content.ToString());
+            string res = completions.Choices[0].Message.Content.ToString();
+            res = res.Replace(Environment.NewLine, " ");            
+            response.WriteString(res);
             //response['choices'][0]['message']['content'])
             return response;
         }
-
-         [Function("GenerateJobDescription")]
+        
+        [Function("GenerateJobDescription")]
         public async Task<HttpResponseData> GenerateJobDescription(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "GenerateJobDescription")] HttpRequestData req)
         {
             
             string requestBody = await req.ReadAsStringAsync();
-            JobsInformation jobsInformation = JsonSerializer.Deserialize<JobsInformation>(requestBody);
+            JobsInformation jobsInformation =  System.Text.Json.JsonSerializer.Deserialize<JobsInformation>(requestBody);
             OpenAIClient client = new OpenAIClient(
             new Uri("https://oai-uksouth-rr.openai.azure.com/"),
             new AzureKeyCredential(Environment.GetEnvironmentVariable("AZURE_OPENAI_API_KEY")));
@@ -135,7 +191,7 @@ namespace SmartRaiders.smartFunctions
            
             var propmtTemplate = $@"
 please fulfil the below job description template. Pay special attention to the INSTRUCTION keyword because this is where I 
-need you to add the relevant information consiering the job position.
+need you to add the relevant information consiering the job position. Also use this keywords {jobsInformation.Tags} to narrow down your scope when working on the INSTRUCTION.
 
 Position: 
 {jobsInformation.JobTitle}
