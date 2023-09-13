@@ -27,7 +27,8 @@ namespace SmartRaiders.smartFunctions
         }
 
         [Function("GenerateTags")]
-        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData req, FunctionContext context)
+         public async Task<HttpResponseData> GenerateTags(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "GenerateTags")] HttpRequestData req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
@@ -90,7 +91,7 @@ namespace SmartRaiders.smartFunctions
                         new ChatMessage(ChatRole.User, propmttemplate)
                         //new ChatMessage(ChatRole.Assistant, @"Hello! How can I assist you today?"),
                     },
-                    Temperature = (float)0.7,
+                    Temperature = (float)1.7,
                     MaxTokens = 800,
                     NucleusSamplingFactor = (float)0.95,
                     FrequencyPenalty = 0,
@@ -107,37 +108,134 @@ namespace SmartRaiders.smartFunctions
             return response;
         }
 
-        private async Task<string> SearchMemoriesAsync(IKernel kernel, string query)
+         [Function("GenerateJobDescription")]
+        public async Task<HttpResponseData> GenerateJobDescription(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "GenerateJobDescription")] HttpRequestData req)
         {
-            StringBuilder result = new StringBuilder();
-            result.Append("The below is relevant information.\n[START INFO]");
+             OpenAIClient client = new OpenAIClient(
+            new Uri("https://oai-uksouth-rr.openai.azure.com/"),
+            new AzureKeyCredential(Environment.GetEnvironmentVariable("AZURE_OPENAI_API_KEY")));
+            string user_message = await req.ReadAsStringAsync() ?? string.Empty;
+            string propmttemplate = @"
 
-            const string memoryCollectionName = "ms10k";
+---
 
-            IAsyncEnumerable<MemoryQueryResult> queryResults =
-                kernel.Memory.SearchAsync(memoryCollectionName, query, limit: 3, minRelevanceScore: 0.77);
+## Position: 
+**{Job Title}**
 
-            // For each memory found, get previous and next memories.
-            await foreach (MemoryQueryResult r in queryResults)
-            {
-                int id = int.Parse(r.Metadata.Id);
-                MemoryQueryResult? rb2 = await kernel.Memory.GetAsync(memoryCollectionName, (id - 2).ToString());
-                MemoryQueryResult? rb = await kernel.Memory.GetAsync(memoryCollectionName, (id - 1).ToString());
-                MemoryQueryResult? ra = await kernel.Memory.GetAsync(memoryCollectionName, (id + 1).ToString());
-                MemoryQueryResult? ra2 = await kernel.Memory.GetAsync(memoryCollectionName, (id + 2).ToString());
+## Department: 
+**{Department/Team}**
 
-                if (rb2 != null) result.Append("\n " + rb2.Metadata.Id + ": " + rb2.Metadata.Description + "\n");
-                if (rb != null) result.Append("\n " + rb.Metadata.Description + "\n");
-                if (r != null) result.Append("\n " + r.Metadata.Description + "\n");
-                if (ra != null) result.Append("\n " + ra.Metadata.Description + "\n");
-                if (ra2 != null) result.Append("\n " + ra2.Metadata.Id + ": " + ra2.Metadata.Description + "\n");
-            }
+## Location: 
+**{Office Location/Remote}**
 
-            result.Append("\n[END INFO]");
-            result.Append($"\n{query}");
+## Reports To: 
+**{Supervising Position}**
 
-            Console.WriteLine(result);
-            return result.ToString();
+## Type: 
+**{Full-Time/Part-Time/Contract}**
+
+---
+
+### Objective:
+
+Provide a concise summary of the primary purpose of this role within the organization. This should give a clear picture of why the role exists and its impact.
+
+`{Brief overview of the role's main objective and its contribution to the company's goals.}`
+
+---
+
+### Key Responsibilities:
+
+1. **{Primary Responsibility}**: 
+   - `{Specific task or duty related to the primary responsibility}`
+   - `{Another task or duty}`
+
+2. **{Secondary Responsibility}**: 
+   - `{Specific task or duty related to the secondary responsibility}`
+   - `{Another task or duty}`
+
+(Continue listing responsibilities as necessary.)
+
+---
+
+### Qualifications:
+
+- **Education:** `{Degree Level (e.g., Bachelor's, Master's)} in {Field of Study}`
+- **Experience:** `{Number of years} years of experience in {specific field or role}`
+- **Skills:** 
+   - `{Specific skill or competency}`
+   - `{Another skill or competency}`
+   
+(Continue listing qualifications as necessary.)
+
+---
+
+### Key Competencies:
+
+- **{Competency 1}**: Ability to `{specific behavior or trait related to competency}`
+- **{Competency 2}**: Demonstrated `{specific behavior or trait}`
+   
+(Continue listing competencies as necessary.)
+
+---
+
+### Benefits & Perks:
+
+- `{Benefit such as health insurance, dental coverage, etc.}`
+- `{Perk such as flexible working hours, remote work options, etc.}`
+
+(Continue listing benefits and perks as necessary.)
+
+---
+
+### About {Company Name}:
+
+Provide a brief description of the company, its mission, and its culture. This helps potential candidates understand the company's values and what it stands for.
+
+`{Brief overview of the company, its history, mission, vision, and values.}`
+
+---
+
+### Equal Opportunity Statement:
+
+`{Company Name}` is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees.
+
+---
+
+### Application Process:
+
+Interested candidates are invited to submit their `{resume/CV, cover letter, portfolio, etc.}` to `{HR email or application portal link}`. Only those selected for an interview will be contacted.
+" + user_message;
+
+       
+            // ### If streaming is not selected
+            Response<ChatCompletions> responseWithoutStream = await client.GetChatCompletionsAsync(
+                "gpt-35-turbo-16k",
+                new ChatCompletionsOptions()
+                {
+                    
+                    Messages =
+                    {
+                        new ChatMessage(ChatRole.System, @"You are an HR assistant that helps HR recruiters and talent finders to find the right information relevant to their business"),
+                        new ChatMessage(ChatRole.User, propmttemplate)
+                        //new ChatMessage(ChatRole.Assistant, @"Hello! How can I assist you today?"),
+                    },
+                    Temperature = (float)1.7,
+                    MaxTokens = 800,
+                    NucleusSamplingFactor = (float)0.95,
+                    FrequencyPenalty = 0,
+                    PresencePenalty = 0,
+                    ChoicesPerPrompt =1
+                });
+
+            ChatCompletions completions = responseWithoutStream.Value;
+
+            HttpResponseData response = req.CreateResponse(HttpStatusCode.OK);
+           
+            response.WriteString(completions.Choices[0].Message.Content.ToString());
+            //response['choices'][0]['message']['content'])
+            return response;
         }
     }
 }

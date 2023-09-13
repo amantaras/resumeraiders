@@ -23,6 +23,7 @@ namespace Company.Function
         public int CompanyID { get; set; }
         public string CompanyName { get; set; }
         public string Location { get; set; }
+        public string About { get; set; }
     }
 
     public class Job
@@ -34,6 +35,11 @@ namespace Company.Function
         public decimal Salary { get; set; }
         public int CompanyID { get; set; }
         public int CategoryID { get; set; }
+        public int ContractType { get; set; }
+        public int Benefits { get; set; }
+        public int ApplicationProcess { get; set; }
+        public int ReportsTo { get; set; }
+
     }
 
 
@@ -318,7 +324,8 @@ namespace Company.Function
                             {
                                 CompanyID = reader.GetInt32(0),
                                 CompanyName = reader.GetString(1),
-                                Location = reader.GetString(2)
+                                Location = reader.GetString(2),
+                                About = reader.GetString(3)
                             };
                             companies.Add(company);
                         }
@@ -356,7 +363,8 @@ namespace Company.Function
                             {
                                 CompanyID = reader.GetInt32(0),
                                 CompanyName = reader.GetString(1),
-                                Location = reader.GetString(2)
+                                Location = reader.GetString(2),
+                                About = reader.GetString(3)
                             };
 
                             var response = req.CreateResponse(HttpStatusCode.OK);
@@ -396,6 +404,7 @@ namespace Company.Function
                     //command.Parameters.AddWithValue("@CompanyID", company.CompanyID);
                     command.Parameters.AddWithValue("@CompanyName", company.CompanyName);
                     command.Parameters.AddWithValue("@Location", company.Location);
+                     command.Parameters.AddWithValue("@About", company.About);
 
                     int rowsAffected = await command.ExecuteNonQueryAsync();
                     if (rowsAffected > 0)
@@ -435,6 +444,7 @@ namespace Company.Function
                     command.Parameters.AddWithValue("@CompanyID", id);
                     command.Parameters.AddWithValue("@CompanyName", company.CompanyName);
                     command.Parameters.AddWithValue("@Location", company.Location);
+                    command.Parameters.AddWithValue("@About", company.About);
 
                     int rowsAffected = await command.ExecuteNonQueryAsync();
                     if (rowsAffected > 0)
@@ -519,7 +529,11 @@ namespace Company.Function
                                 Location = reader.GetString(3),
                                 Salary = reader.GetDecimal(4),
                                 CompanyID = reader.GetInt32(5),
-                                CategoryID = reader.GetInt32(6)
+                                CategoryID = reader.GetInt32(6),
+                                ContractType = reader.GetInt32(7),
+                                Benefits = reader.GetInt32(8),
+                                ApplicationProcess = reader.GetInt32(9),
+                                ReportsTo = reader.GetInt32(10)
                             };
                             jobs.Add(job);
                         }
@@ -563,7 +577,11 @@ namespace Company.Function
                                 Location = reader.GetString(3),
                                 Salary = reader.GetDecimal(4),
                                 CompanyID = reader.GetInt32(5),
-                                CategoryID = reader.GetInt32(6)
+                                CategoryID = reader.GetInt32(6),
+                                ContractType = reader.GetInt32(7),
+                                Benefits = reader.GetInt32(8),
+                                ApplicationProcess = reader.GetInt32(9),
+                                ReportsTo = reader.GetInt32(10)
                             };
 
                             var response = req.CreateResponse(HttpStatusCode.OK);
@@ -607,6 +625,12 @@ namespace Company.Function
                     command.Parameters.AddWithValue("@Salary", job.Salary);
                     command.Parameters.AddWithValue("@CompanyID", job.CompanyID);
                     command.Parameters.AddWithValue("@CategoryID", job.CategoryID);
+                    command.Parameters.AddWithValue("@CategoryID", job.CategoryID);
+                    command.Parameters.AddWithValue("@ContractType", job.ContractType);
+                    command.Parameters.AddWithValue("@Benefits", job.Benefits);
+                    command.Parameters.AddWithValue("@ApplicationProcess", job.ApplicationProcess);
+                    command.Parameters.AddWithValue("@ReportsTo", job.ReportsTo);
+
 
                     int rowsAffected = await command.ExecuteNonQueryAsync();
                     if (rowsAffected > 0)
@@ -652,6 +676,11 @@ namespace Company.Function
                     command.Parameters.AddWithValue("@Salary", job.Salary);
                     command.Parameters.AddWithValue("@CompanyID", job.CompanyID);
                     command.Parameters.AddWithValue("@CategoryID", job.CategoryID);
+                    command.Parameters.AddWithValue("@ContractType", job.ContractType);
+                    command.Parameters.AddWithValue("@Benefits", job.Benefits);
+                    command.Parameters.AddWithValue("@ApplicationProcess", job.ApplicationProcess);
+                    command.Parameters.AddWithValue("@ReportsTo", job.ReportsTo);
+
 
                     int rowsAffected = await command.ExecuteNonQueryAsync();
                     if (rowsAffected > 0)
