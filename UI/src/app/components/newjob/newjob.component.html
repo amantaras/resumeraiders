@@ -1,0 +1,105 @@
+<div class="container">
+  <h3>
+    <img width="30" alt="Job Details" src="assets/images/jobdetail.png" />
+    &nbsp;Add Job
+  </h3>
+  <p>
+    <alert></alert>
+  </p>
+  <hr />
+
+  <label>Job Title</label>
+  <div class="form-group input-group">
+
+    <span class="material-symbols-outlined input-group-text">
+      work
+    </span>
+    <input type="text" [(ngModel)]="jobs.jobTitle" name="jobTitle" class="form-control" id="jobTitle" #name="ngModel" />
+  </div>
+
+  <br />
+  <label>Tags
+  </label>
+  <div class="form-group input-group ">
+    <span class="material-symbols-outlined input-group-text">
+      sell
+    </span>
+    <input type="text" [(ngModel)]="jobs.Tags" name="tags" class="form-control" id="Tags">
+    <button (click)="generateTag(jobs.jobTitle)" class="btn btn-info" type="button" id="button-addon2"
+      data-toggle="tooltip" data-placement="top" title="Generate tags based on Job Title">Generate
+
+      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-black">
+        Copilot
+        <span class="visually-hidden">unread messages</span>
+      </span>
+    </button>
+  </div>
+  <br />
+
+  <label for="location">Location</label>
+  <div class="form-group input-group">
+
+    <span class="material-symbols-outlined input-group-text">
+      location_on
+    </span>
+    <input type="text" [(ngModel)]="jobs.Location" name="location" class="form-control" id="location" #name="ngModel" />
+  </div>
+
+
+  <br />
+  <div class="form-group">
+    <label for="beneifts">Benefits</label>
+    <textarea [(ngModel)]="jobs.Benefits" name="benefits" class="form-control" rows="2" cols="60"
+      id="benefits"></textarea>
+    <br />
+  </div>
+
+  <br />
+
+  <label>Job Description</label>
+  <div class="form-group input-group">
+
+    <textarea [(ngModel)]="jobs.Description" name="description" class="form-control" rows="10" cols="60"
+      id="description"></textarea>
+    <button (click)="generateJD(jobs.Tags)" class="btn btn-info" type="button" id="button-addon3"
+      data-toggle="tooltip" data-placement="top" title="Generate Description based on Tags">Generate
+
+      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-black">
+        Copilot
+        <span class="visually-hidden">unread messages</span>
+      </span>
+
+
+    </button>
+    <br>
+
+  </div>
+
+
+  <br />
+  <br />
+  <br />
+  <div class="d-grid gap-2 col-6 mx-auto">
+
+
+
+    <div class="container text-center">
+      <div class="row">
+        <div class="col">
+          <button (click)="postNewJob(jobs)" class="btn btn-warning form-control" type="button">Post</button>
+        </div>
+        <div class="col">
+
+
+
+
+          <button class="btn btn-primary form-control text-center" type="button">Post to Linkedin <img height="20"
+              src="assets/images/linkedin.png" style="padding-bottom: 1%;" /></button>
+
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>

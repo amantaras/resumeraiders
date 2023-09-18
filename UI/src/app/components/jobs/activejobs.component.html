@@ -1,0 +1,45 @@
+<div class="input-group">
+  <input type="text" class="form-control" placeholder="Search">
+  <div class="input-group-append">
+    <button class="btn btn-secondary" type="button">
+      <i class="fa fa-search"></i>
+    </button>
+  </div>
+</div>
+<br />
+<div class="container">
+  <h3>
+    <img width="30" alt="Active Jobs" src="assets/images/positions.png" />
+    &nbsp;Active Jobs
+  </h3>
+  <hr />
+
+  <table class="table table-hover  " *ngIf="!loading">
+    <thead class="table-dark ">
+      <tr >
+        <th scope="col">#</th>
+        <th scope="col">Job Title</th>
+        <th scope="col">Location</th>
+        <th scope="col">Contract Type</th>
+       </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let job of jobs" (click)="rowSelected(job)">
+        <th scope="row">{{ job.JobID }}</th>
+        <td>{{ job.JobTitle }}</td>
+        <td>{{ job.Location }}</td>
+        <td>{{ job.ContractType }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="d-flex justify-content-center">
+    <div
+      class="spinner-border text-secondary"
+      style="width: 3rem; height: 3rem"
+      role="status"
+      *ngIf="loading"
+    >
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>

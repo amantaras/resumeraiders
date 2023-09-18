@@ -1,0 +1,52 @@
+<nav class="navbar navbar-inverse navbar-fixed-top bg-dark navbar-dark bg-opacity-75">
+  <div class="container">
+      <a [routerLink]="['/home']">
+        <img
+          width="120"
+          alt="Resume Raiders Logo"
+          src="../assets/images/logo-white.png"
+        /> </a
+        >
+    <div *ngIf="!authorizationService.isUserLoggedIn()">
+      <button class="btn btn-default btn-sm btn-primary" type="button" routerLink="/login">
+        Login
+      </button>
+    </div>
+    <div *ngIf="authorizationService.isUserLoggedIn()">
+      <button class="btn btn-default btn-sm btn-danger" type="button" (click)="logOut()">
+        Logout
+      </button>
+    </div>
+  </div>
+</nav>
+
+
+<div class="container" >
+  <!-- <div class="bg-light p-5 rounded-lg">
+    <h1>{{ title }}</h1>
+    <p class="lead">
+      Discover how AI Copilot can help you find the best talent for your company with its innovative and adventurous features.
+    </p>
+  </div> -->
+  <p>&nbsp;</p>
+  <div
+    *ngIf="!authorizationService.isUserLoggedIn()"
+    class="alert alert-primary"
+    role="alert"
+  >
+    <h4 class="alert-primary">Adventures in AI Copilot for Recruitment!</h4>
+    <p>
+      AI Copilot is your ultimate partner in recruitment, offering you a range of adventurous and cutting-edge solutions to attract and hire the best candidates. With AI Copilot, you can explore new horizons in recruitment, using its smart and adventurous tools to find and engage the most qualified talent for your business. Experience the thrill of recruitment with AI Copilot, the innovative platform that helps you navigate the talent market with its adventurous and intelligent features.
+    </p>
+    <hr />
+    <p class="mb-0">To access the features, proceed to login.</p>
+  </div>
+  <router-outlet *ngIf="!isIframe"> </router-outlet>
+
+  <div>&nbsp;</div>
+  <div>&nbsp;</div>
+  <div>&nbsp;</div>
+  <div>&nbsp;
+
+  </div>
+ 

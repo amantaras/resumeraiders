@@ -1,0 +1,42 @@
+<div class="container">
+  <h3>
+    <img width="30" alt="Login" src="assets/images/signin.png" /> &nbsp;Login
+  </h3>
+  <p>
+    <alert></alert>
+  </p>
+  <hr />
+  <form (ngSubmit)="login(loginForm)" class="row g-3" #loginForm="ngForm">
+    <div class="col-12">
+      <label for="email">Username</label>
+      <input
+        type="email"
+        id="email"
+        name="userName"
+        placeholder="Username"
+        [(ngModel)]="userName"
+        class="form-control"
+        aria-describedby="emailHelp"
+      />
+    </div>
+    <div class="col-12">
+      <label for="password">Password</label>
+      <input
+        type="password"
+        ngModel
+        class="form-control"
+        placeholder="Password"
+        [(ngModel)]="password"
+        id="password"
+        name="password"
+      />
+    </div>
+
+    <div class="col-12">
+      <button type="submit" class="btn btn-dark">Login</button>
+    </div>
+  </form>
+  <div *ngIf="loginErrorMessage">
+    Please enter the correct UserId and Password
+  </div>
+</div>

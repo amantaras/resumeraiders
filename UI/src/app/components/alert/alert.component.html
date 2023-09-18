@@ -1,0 +1,18 @@
+<span *ngFor="let alert of alertService.messages">
+  <div
+    class="alert alert-dismissible fade show"
+    [ngClass]="{
+      'alert-success': alert.type === 'success',
+      'alert-danger': alert.type === 'danger'
+    }"
+    role="alert"
+  >
+    {{ alert.message }}
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+</span>

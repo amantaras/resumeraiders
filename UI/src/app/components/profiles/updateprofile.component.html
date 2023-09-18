@@ -1,0 +1,53 @@
+<div class="container">
+  <h3>
+    <img width="30" alt="Winning Bids" src="assets/images/changeprofile.png" />
+    &nbsp;Update Profile
+  </h3>
+  <hr />
+  <p>
+    <alert></alert>
+  </p>
+
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Description</th>
+        <th scope="col">Starting Price</th>
+        <th scope="col">Winning Price</th>
+        <th scope="col">Payment Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let auction of auctions">
+        <th scope="row">{{ auction.idauction }}</th>
+        <td>{{ auction.name }}</td>
+        <td>{{ auction.description }}</td>
+        <td>{{ auction.startingPrice }}</td>
+        <td>{{ auction.bidPrice }}</td>
+        <td *ngIf="auction.IsPaymentMade">Paid</td>
+        <td *ngIf="!auction.IsPaymentMade">
+          <form #f="ngForm">
+            <button
+              (click)="makePayment(auction)"
+              class="btn btn-success pull-right"
+            >
+              Make Payment
+            </button>
+          </form>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="d-flex justify-content-center">
+    <div
+      class="spinner-border text-secondary"
+      style="width: 3rem; height: 3rem"
+      role="status"
+      *ngIf="loading"
+    >
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>

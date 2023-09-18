@@ -1,0 +1,143 @@
+<div class="container">
+  <h3>
+    <img width="30" alt="Create Auction" src="assets/images/payment.png" />
+    &nbsp;Auction Payment
+  </h3>
+  <hr />
+  <form #f="ngForm" class="row g-3" (ngSubmit)="makePayment()">
+    <p>
+      <alert></alert>
+    </p>
+
+    <div class="form-group">
+      <label>Auction Name</label>
+      <input
+        type="text"
+        [(ngModel)]="auction.name"
+        [ngModelOptions]="{ standalone: true }"
+        name="name"
+        class="form-control"
+        id="name"
+        readonly
+        #name="ngModel"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="description">Auction Details</label>
+      <textarea
+        [(ngModel)]="auction.description"
+        [ngModelOptions]="{ standalone: true }"
+        name="description"
+        class="form-control"
+        rows="3"
+        cols="60"
+        id="description"
+        readonly
+        #description="ngModel"
+      ></textarea>
+    </div>
+
+    <h5 class="panel-title">Payment Details</h5>
+    <h6>(Sample payment screen to simulate payment flow)</h6>
+    <hr />
+    <div class="form-group">
+      <label for="cardNumber"> CARD NUMBER</label>
+      <div class="row">
+        <div
+          class="col-md-6 col-xs-6 col-lg-6 col-sm-6 input-group"
+          align="left"
+        >
+          <input
+            type="text"
+            [(ngModel)]="auctionPayment.creditCardNo"
+            name="cardNumber"
+            class="form-control"
+            disabled="true"
+            id="cardNumber"
+            placeholder="Valid Card Number"
+            required
+            autofocus
+          />
+          <span class="input-group-addon"
+            ><span class="glyphicon glyphicon-lock"></span
+          ></span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="expityMonth"> EXPIRATION DATE</label>
+      <div class="row">
+        <div class="col-md-4 col-xs-4 col-lg-4 col-sm-4" align="left">
+          <input
+            type="text"
+            [(ngModel)]="auctionPayment.month"
+            class="form-control"
+            keyboardType="number"
+            name="month"
+            id="expityMonth"
+            placeholder="MM"
+            disabled="true"
+            required
+          />
+        </div>
+        <div class="col-md-4 col-xs-4 col-lg-4 col-sm-4" align="left">
+          <input
+            type="text"
+            [(ngModel)]="auctionPayment.year"
+            class="form-control"
+            keyboardType="number"
+            name="year"
+            id="expiryYear"
+            placeholder="YY"
+            disabled="true"
+            required
+          />
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cvCode"> CV CODE</label>
+      <div class="row">
+        <div class="col-md-4 col-xs-4 col-lg-4 col-sm-4" align="left">
+          <input
+            type="password"
+            class="form-control"
+            name="password"
+            id="cvCode"
+            placeholder="CV"
+            disabled="true"
+            required
+            value="123"
+          />
+        </div>
+      </div>
+    </div>
+
+    <ul class="nav">
+      <li>
+        <span class="glyphicon glyphicon-usd"></span
+        ><b>
+          Final Payment: <span>${{ auction.bidPrice }}</span>
+        </b>
+      </li>
+    </ul>
+    <br />
+    <div class="btn-toolbar">
+      <button *ngIf="!loadingPayment" type="submit" class="btn btn-primary">
+        &nbsp;Pay&nbsp;
+      </button>
+    </div>
+
+    <div class="d-flex justify-content-center">
+      <div
+        class="spinner-border text-secondary"
+        style="width: 3rem; height: 3rem"
+        role="status"
+        *ngIf="loadingPayment"
+      >
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+  </form>
+</div>

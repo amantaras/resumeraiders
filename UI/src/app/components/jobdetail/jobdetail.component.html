@@ -1,0 +1,111 @@
+<div class="container">
+  <h3>
+    <img width="30" alt="Job Details" src="assets/images/jobdetail.png" />
+    &nbsp;Job Details
+  </h3>
+  <p>
+    <alert></alert>
+  </p>
+  <hr />
+
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-8">
+
+        <figure>
+          <blockquote class="blockquote">
+            <h1><strong>{{jobDetail.JobTitle}}</strong></h1>
+          </blockquote>
+          <figcaption class="blockquote-footer">
+            {{jobDetail.Location}}<cite title="Source Title"></cite>
+          </figcaption>
+        </figure>
+
+      </div>
+      <div class="col-sm-4"></div>
+    </div>
+    <div class="row justify-content-around">
+      <div class="col-sm"><button class="btn btn-warning form-control" type="button">Apply</button></div>
+
+      <div class="col-sm ">
+        <span class="material-symbols-outlined text-primary" style="margin-top: 10%;">
+          bookmark
+        </span>
+       
+
+        
+
+        
+      </div>
+      <div class="col-sm"></div>
+      <div class="col-sm"></div>
+      <div class="col-sm"></div>
+      <div class="col-sm"></div>
+      <div class="col-sm"></div>
+      <div class="col-sm"></div>
+      <div class="col-sm"></div>
+
+      <div class="col-sm"></div>
+      <div class="col-sm"></div>
+      <div class="col-sm"></div>
+      <div class="col-sm"></div>
+
+    </div>
+
+
+    <br />
+    <div class="row">
+      <div class="col-sm">Date posted</div>
+      <div class="col-sm"><strong>Sep 13, 2023</strong></div>
+      <div class="col-sm"></div>
+      <div class="col-sm">Employment type</div>
+      <div class="col-sm"><strong>{{jobDetail.ContractType}}</strong></div>
+    </div>
+    <br />
+    <div class="row">
+      <div class="col-sm">Job Number</div>
+      <div class="col-sm"><strong>{{jobDetail.JobID}}</strong></div>
+      <div class="col-sm"></div>
+      <div class="col-sm">Travel</div>
+      <div class="col-sm"><strong>0-20%</strong></div>
+    </div>
+    <br /> <br />
+
+    <div class="row">
+      <div class="col-sm-8">
+        <div class="card  bg-light bg-opacity-25" >
+          <div class="card-header bg-dark text-white bg-opacity-55">
+            <strong>Job Description</strong>
+
+          </div>
+          <div class="card-body " >
+            <h5 class="card-title" ></h5>
+            
+            <p style="white-space: pre-wrap; " class="card-text">{{jobDetail.Description}}</p>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="card bg-light bg-opacity-50">
+          <div class="card-header bg-dark text-white">
+            <strong>Benefits</strong>
+          </div>
+          <div class="card-body ">
+            <h5 class="card-title"></h5>
+            <p style="white-space: pre-wrap" class="card-text">{{jobDetail.Benefits}}</p>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <br />
+  <br /> <br />
+
+
+
+
+
+</div>

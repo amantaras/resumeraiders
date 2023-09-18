@@ -1,0 +1,69 @@
+<div class="container">
+  <!-- <timer-auto-refresh
+    (TimerExpired)="refresh()"
+    [ElapsTime]="this.elapsedTime"
+    *ngIf="!loadMakeOffer"
+  ></timer-auto-refresh> -->
+
+  <h3>
+    <img width="30" alt="Active Positions" src="assets/images/bid.png" />
+    &nbsp;Job Details
+  </h3>
+
+  <p>
+    <alert></alert>
+  </p>
+  <hr />
+
+  <div class="form-group">
+    <label>Job Title</label>
+    <div class="input-group mb-3">
+      <span class="input-group-text material-icons">work</span>
+      <input
+        type="text"
+        class="form-control"
+        readonly
+      />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="startingPrice">Location</label>
+    <div class="input-group mb-3">
+      <span class="input-group-text material-icons">place</span>
+      <input
+        type="text"
+        class="form-control"
+        readonly
+      />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="description">Job Description</label>
+    <textarea
+      [(ngModel)]="auction.description"
+      name="description"
+      class="form-control"
+      rows="3"
+      cols="60"
+      id="description"
+      readonly
+    ></textarea>
+  </div>
+  
+
+  <div class="form-group">
+    <label for="description">Benefits</label>
+    <textarea
+      [(ngModel)]="auction.description"
+      name="description"
+      class="form-control"
+      rows="3"
+      cols="60"
+      id="description"
+      readonly
+    ></textarea>
+  </div>
+
+</div>
